@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,9 +17,10 @@ export default function LoginForm() {
     try {
       const result = await signIn('credentials', {
         email,
-        password,
+        senha,
         redirect: false,
       });
+
 
       if (result?.error) {
         setError('Credenciais inválidas');
@@ -62,13 +63,13 @@ export default function LoginForm() {
                 Senha
               </label>
               <input
-                id="password"
-                name="password"
+                id="senha"
+                name="senha"
                 type="password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
-                value={password}
+                value={senha}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>

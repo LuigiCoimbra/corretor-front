@@ -36,7 +36,7 @@ export interface Chat {
 // Tipos para Autenticação
 export interface LoginCredentials {
   email: string;
-  password: string;
+  senha: string;
 }
 
 export interface AuthResponse {

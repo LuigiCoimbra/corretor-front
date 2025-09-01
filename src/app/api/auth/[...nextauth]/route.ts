@@ -7,19 +7,41 @@ const handler = NextAuth({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' }
+        senha: { label: 'Senha', type: 'password' }
       },
-      async authorize(credentials) {
-        // Aqui você deve implementar a lógica de autenticação real
-        // Por enquanto, vamos usar uma autenticação simples para demonstração
-        if (credentials?.email === 'user@example.com' && credentials?.password === 'password') {
-          return {
-            id: '1',
-            email: credentials.email,
-            name: 'User Example',
-          };
+      async authorize(credentials, req): Promise<any> {
+        if (!credentials?.email || !credentials?.senha) {
+          throw new Error('Email e senha são necessários');
         }
-        return null;
+
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: credentials.email,
+                senha: credentials.senha,
+              }),
+            }
+          );
+
+          const data = await response.json();
+          console.log(data)
+          if (!response.ok) {
+            throw new Error(data.message || 'Erro na autenticação');
+          }
+
+          return {
+            id: data.usuario.id,
+            email: data.usuario.email,
+            nome: data.usuario.nome,
+            accessToken: data.token,
+          };
+        } catch (error) {
+          throw new Error('Erro na autenticação');
+        }
       }
     })
   ],
@@ -33,14 +55,20 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.user.id = token?.id as string;
-      }
-      return session;
+      return {
+        ...session,
+        user: {
+          id: token.id,
+          email: token.email,
+          nome: token.nome,
+        },
+        token: token.accessToken,
+      };
     },
   },
 });

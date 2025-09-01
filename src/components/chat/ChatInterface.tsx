@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChatBubbleLeftIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import ImageUpload from './ImageUpload';
+import { ImageUpload } from './ImageUpload';
 import Image from 'next/image';
 
 import { Chat, Message } from '@/types';

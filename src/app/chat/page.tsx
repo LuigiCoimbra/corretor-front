@@ -3,7 +3,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import ChatInterface from '@/components/chat/ChatInterface';
+import { ConversationList } from '@/components/chat/ConversationList';
+import { ChatContainer } from '@/components/chat/ChatContainer';
 
 export default function ChatPage() {
   const { data: session, status } = useSession();
@@ -23,5 +24,10 @@ export default function ChatPage() {
     );
   }
 
-  return <ChatInterface />;
+  return (
+    <main className="flex h-screen bg-gray-50">
+      <ConversationList />
+      <ChatContainer />
+    </main>
+  );
 }

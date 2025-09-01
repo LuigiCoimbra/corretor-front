@@ -5,12 +5,12 @@ import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
 interface ImageUploadProps {
-  onImageUpload: (file: File) => void;
-  selectedImage?: File | null;
+  onImageSelect: (file: File | null) => void;
+  selectedImage: File | null;
 }
 
-export default function ImageUpload({ onImageUpload, selectedImage }: ImageUploadProps) {
-  const [isDragging, setIsDragging] = useState(false);
+export function ImageUpload({ onImageSelect, selectedImage }: ImageUploadProps) {
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -24,35 +24,14 @@ export default function ImageUpload({ onImageUpload, selectedImage }: ImageUploa
     }
   }, [selectedImage]);
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      if (file.type.startsWith('image/')) {
-        onImageUpload(file);
-      }
-    }
-  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
       if (file.type.startsWith('image/')) {
-        onImageUpload(file);
+        onImageSelect(file);
       }
     }
   };
@@ -62,12 +41,7 @@ export default function ImageUpload({ onImageUpload, selectedImage }: ImageUploa
   };
 
   return (
-    <div
-      className={`relative flex items-center justify-center p-2 ${isDragging ? 'bg-indigo-50' : ''}`}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
+    <div className="relative flex items-center justify-center p-2">
       <input
         type="file"
         ref={fileInputRef}
@@ -86,7 +60,7 @@ export default function ImageUpload({ onImageUpload, selectedImage }: ImageUploa
           />
           <button
             type="button"
-            onClick={() => onImageUpload(null as any)}
+            onClick={() => onImageSelect(null)}
             className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 focus:outline-none"
           >
             <XMarkIcon className="h-4 w-4" />
@@ -101,11 +75,7 @@ export default function ImageUpload({ onImageUpload, selectedImage }: ImageUploa
           <PhotoIcon className="h-6 w-6" />
         </button>
       )}
-      {isDragging && (
-        <div className="absolute inset-0 flex items-center justify-center bg-indigo-50 bg-opacity-90 rounded-lg border-2 border-dashed border-indigo-300">
-          <span className="text-indigo-600">Solte a imagem aqui</span>
-        </div>
-      )}
+
     </div>
   );
 }

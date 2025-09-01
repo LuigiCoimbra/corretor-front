@@ -6,16 +6,18 @@ import Link from 'next/link';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log(JSON.stringify({ nome, email, senha }));
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (senha !== confirmPassword) {
       setError('As senhas não coincidem');
       return;
     }
@@ -26,7 +28,7 @@ export default function RegisterForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ nome, email, senha }),
       });
 
       if (!response.ok) {
@@ -40,7 +42,7 @@ export default function RegisterForm() {
       
       // Aguarda um momento antes de redirecionar
       setTimeout(async () => {
-        await router.replace('/login');
+        await router.replace('/');
       }, 1500);
     } catch (error) {
       setError('Ocorreu um erro ao criar a conta');
@@ -57,6 +59,21 @@ export default function RegisterForm() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="nome" className="sr-only">
+                Nome
+              </label>
+              <input
+                id="nome"
+                name="nome"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
+            </div>
             <div>
               <label htmlFor="email" className="sr-only">
                 Email
@@ -83,7 +100,7 @@ export default function RegisterForm() {
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
-                value={password}
+                value={senha}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
